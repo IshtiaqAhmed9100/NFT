@@ -10,18 +10,20 @@ contract NFT is ERC721, Ownable {
     mapping(uint256 => bool) private _tokenExists;
 
     uint256 private _priceUSD = 100;
-    uint256 private _startTime = block.timestamp;
-    uint256 private _mintDuration = _startTime + 2 hours;
+    uint256 private _startTime;
+    uint256 private _mintDuration;
 
     address payable public _ownerWallet;
 
-    constructor(address payable owner) Ownable(owner) ERC721("MyNFT", "NFT"){
+    constructor(address payable owner, uint256 startTime, uint256 mintDuration ) Ownable(owner) ERC721("MyNFT", "NFT"){
              _ownerWallet = owner;
+            startTime = block.timestamp;
+            mintDuration= startTime + 7200;   
     }
 
     function mint() external payable {
         require(_mintedCount[msg.sender] < 2, "only 2 nfts allowed");
-        require( block.timestamp < _mintDuration);
+        require( _startTime < _mintDuration);  //  234554332 < 7200
         require( msg.value >= 0.01 ether || msg.value >= _priceUSD * 10**18);
 
         uint256 tokenId = totalToken()+ 1;
